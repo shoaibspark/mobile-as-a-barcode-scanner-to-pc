@@ -2,10 +2,8 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const {execFile} = require("child_process");
 const {WebSocketServer} = require("ws");
-const {execFileSync} = require("child_process");
-
+const {execFile, execFileSync} = require("child_process");
 const PORT = 3333;
 const COOLDOWN_MS = 1400;
 const lastScannedAt = new Map();
@@ -29,17 +27,23 @@ function typeBarcodeOnPc(code) {
   if (!clean) return;
 
   try {
+    // Type the barcode characters first
     execFileSync("ydotool", ["type", "--key-delay", "15", clean], {
       stdio: "ignore",
     });
-    execFileSync("ydotool", ["key", "Return"], {stdio: "ignore"});
     return;
   } catch (_) {
     execFile(
       "xdotool",
-      ["type", "--clearmodifiers", "--delay", "15", clean, "key", "Return"],
+      ["type", "--clearmodifiers", "--delay", "15", clean],
       (err) => {
-        if (err) console.error("[xdotool error]", err.message);
+        if (err) {
+          console.error("[xdotool error]", err.message);
+          return;
+        }
+        execFile("xdotool", ["key", "--clearmodifiers", "Return"], (err2) => {
+          if (err2) console.error("[xdotool Return error]", err2.message);
+        });
       },
     );
   }
