@@ -1,4 +1,4 @@
-# Barcode-to-PC (Free)
+# Mobile-as-a-Barcode-Scanner-to-PC (Free)
 
 Turn any phone into a barcode scanner that types barcodes directly onto your PC keyboard.
 
